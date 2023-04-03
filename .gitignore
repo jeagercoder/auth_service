@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.git/
+.idea/
+auth_service/__pycache__/
+auth_service/config.py
+account/__pycache__/
+account/migrations/__pycache__/
+internal/__pycache__/
+*.sqlite3

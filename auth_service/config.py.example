@@ -1,0 +1,35 @@
+from datetime import timedelta
+
+#   Mysql config
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '',
+        'PORT': 3306,
+        'USER': '',
+        'PASSWORD': '',
+        'NAME': ''
+    }
+}
+
+
+#   Celery for redis
+CELERY_BROKER_URL = ''
+CELERY_RESULT_BACKEND = ''
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
+#   Otp config
+OTP_EXPIRED = timedelta(minutes=5)
+
+
+#   Notification service
+NOTIFICATION_SERVICE_URL = ''
+NOTIFICATION_SERVICE_AUTH = ''
+
+
+#   Auth Internal Service
+INTERNAL_AUTH_PREFIX = ''
+INTERNAL_AUTH_VALUE = ''
