@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'service_lib.middleware.InternalServiceMiddleware',
-    'internal.middleware.InternalServiceMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

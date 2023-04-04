@@ -15,7 +15,7 @@ class Otp(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
-    otp_code = models.IntegerField()
+    otp_code = models.CharField(max_length=6)
     otp_type = models.CharField(max_length=20, choices=OtpType.choices)
     otp_via = models.CharField(max_length=20, choices=OtpVia.choices, default=OtpVia.EMAIL)
 
