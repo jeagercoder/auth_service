@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import serializers
 
+from service_lib.auth_service.utils.auth import login
+
 import string
 import random
 from datetime import datetime
@@ -138,6 +140,40 @@ class RegisterVerifyOtpSerializer(serializers.Serializer):
         return instance
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(write_only=True)
+    session = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        try:
+            instance = Account.objects.get(email=validated_data.get('email'))
+        except Account.DoesNotExist:
+            raise serializers.ValidationError({'email': ['Email not found.']})
+
+        if not instance.check_password(validated_data.get('password')):
+            raise serializers.ValidationError({'password': ['Wrong password.']})
+        instance.last_login = timezone.now()
+        instance.save()
+        session = login(uuid=instance.uuid, username=instance.username, email=instance.email)
+        self.session = session
+        return instance
+
+    def to_representation(self, instance):
+        return {'session': self.session}
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Account
+        exclude = [
+            'date_joined',
+            'last_login',
+            'password',
+            'groups',
+            'user_permissions',
+            'is_superuser',
+            'is_staff'
+        ]
 
