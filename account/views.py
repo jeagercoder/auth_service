@@ -6,7 +6,10 @@ from rest_framework import status
 from rest_framework.decorators import action
 
 from .models import Account, TempAccount
-from .serializers import RegisterAccountSerializer
+from .serializers import (
+    RegisterAccountSerializer,
+    RegisterVerifyOtpSerializer
+)
 
 
 class AccountViewSet(GenericViewSet):
@@ -16,6 +19,8 @@ class AccountViewSet(GenericViewSet):
     def get_serializer_class(self):
         if self.action == 'register':
             return RegisterAccountSerializer
+        if self.action == 'register_otp':
+            return RegisterVerifyOtpSerializer
         return super().get_serializer_class()
 
     @action(methods=['POST'], detail=False)
@@ -24,5 +29,13 @@ class AccountViewSet(GenericViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'], detail=False)
+    def register_otp(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

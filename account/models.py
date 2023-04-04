@@ -18,7 +18,5 @@ class TempAccount(models.Model):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50)
     email = models.EmailField()
-
-    account = models.OneToOneField(Account, on_delete=models.CASCADE, blank=True, null=True)
-
+    password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)

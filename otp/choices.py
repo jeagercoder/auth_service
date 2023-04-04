@@ -8,3 +8,10 @@ class OtpType(models.TextChoices):
 
 class OtpVia(models.TextChoices):
     EMAIL = 'EMAIL', _('Email')
+
+
+class OtpStatus(models.TextChoices):
+    OPEN = 'OPEN', _('Open')
+    VERIFIED = 'VERIFIED', _('Verified')
+    EXPIRED = 'EXPIRED', _('Expired')
+    BLOCKED = 'BLOCKED', _('Blocked')
