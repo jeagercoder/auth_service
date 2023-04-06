@@ -91,28 +91,31 @@ class RegisterAccountSerializer(serializers.ModelSerializer):
 
 
 class RegisterVerifyOtpSerializer(serializers.Serializer):
-    email = serializers.EmailField(write_only=True)
     otp_code = serializers.CharField(max_length=6, min_length=6, write_only=True)
     otp_token = serializers.CharField(max_length=32, min_length=32, write_only=True)
 
     def create(self, validated_data):
         try:
             otp = Otp.objects.get(
-                user_email=validated_data.get('email'),
                 otp_token=validated_data.get('otp_token'),
-                otp_type=OtpType.REGISTER,
-                otp_status=OtpStatus.OPEN
+                otp_type=OtpType.REGISTER
             )
         except Otp.DoesNotExist:
-            raise serializers.ValidationError({'otp_token': ['OTP token invalid.'],
-                                               'email': ['Email invalid.']})
+            raise serializers.ValidationError({'otp_token': ['OTP token invalid.']})
+
+        if otp.otp_status == OtpStatus.BLOCKED:
+            raise serializers.ValidationError({'otp_code': ['OTP attempt exceeded limit.']})
 
         if otp.trial >= 3:
             otp.otp_status = OtpStatus.BLOCKED
             otp.save()
             raise serializers.ValidationError({'otp_code': ['OTP attempt exceeded limit.']})
+
         otp.trial = F('trial') + 1
         otp.save()
+
+        if otp.otp_status == OtpStatus.EXPIRED:
+            raise serializers.ValidationError({'otp_code': ['OTP has expired.']})
 
         if otp.is_expired:
             otp.otp_status = OtpStatus.EXPIRED
